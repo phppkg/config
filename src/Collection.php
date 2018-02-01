@@ -8,9 +8,9 @@
 
 namespace MyLib\Collection;
 
-use Inhere\Library\Files\Parsers\IniParser;
-use Inhere\Library\Files\Parsers\JsonParser;
-use Inhere\Library\Files\Parsers\YmlParser;
+use MyLib\FileParse\IniParser;
+use MyLib\FileParse\JsonParser;
+use MyLib\FileParse\YmlParser;
 use MyLib\ArrUtil\Arr;
 use MyLib\FileUtil\File;
 use MyLib\ObjUtil\Obj;
