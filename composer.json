@@ -13,16 +13,15 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0"
+    "php": ">7.0.0",
+    "mylib/arr-utils": "~1.0",
+    "mylib/str-utils": "~1.0",
+    "mylib/obj-utils": "~1.0",
+    "mylib/file-parse": "~1.0"
   },
   "autoload": {
     "psr-4": {
-      "MyLib\\SysUtil\\" : "src/"
+      "MyLib\\Collection\\" : "src/"
     }
-  },
-  "suggest": {
-    "inhere/simple-print-tool": "Very lightweight data printing tools",
-    "inhere/php-validate": "Very lightweight data validate tool",
-    "inhere/console": "a lightweight php console application library."
   }
 }
