@@ -6,22 +6,21 @@
  * Time: 15:04
  */
 
-namespace Toolkit\Collection;
+namespace PhpPkg\Config;
 
 use ArrayAccess;
 use Countable;
 use InvalidArgumentException;
 use IteratorAggregate;
 use RangeException;
-use Toolkit\File\FileSystem;
-use Toolkit\ObjUtil\Obj;
-use Toolkit\StrUtil\Str;
+use Toolkit\FsUtil\FileSystem;
+use Toolkit\Stdlib\Obj;
+use Toolkit\Stdlib\Str;
 use Traversable;
 use function count;
 use function explode;
 use function in_array;
 use function is_file;
-use function is_string;
 use function preg_match;
 use function str_replace;
 use function strpos;
@@ -40,52 +39,52 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @var string
      */
-    private $lang = 'en';
+    private string $lang = 'en';
 
     /**
      * fallback language
      *
      * @var string
      */
-    private $fallbackLang = 'en';
+    private string $fallbackLang = 'en';
 
     /**
      * current use language
      *
      * @var string[]
      */
-    private $allowed = [];
+    private array $allowed = [];
 
     /**
      * @var Collection
      */
-    private $data;
+    private Collection $data;
 
     /**
-     * @var Collection
+     * @var Collection|null
      */
-    private $fallbackData = [];
+    private ?Collection $fallbackData;
 
     /**
      * The base path language directory.
      *
      * @var string
      */
-    private $basePath;
+    private string $basePath = '';
 
     /**
      * default file name.
      *
      * @var string
      */
-    private $defaultFile = 'default';
+    private string $defaultFile = 'default';
 
     /**
      * the language file type. more see Collection::FORMAT_*
      *
      * @var string
      */
-    private $format = 'php';
+    private string $format = ConfigBox::FORMAT_PHP;
 
     /**
      * file separator char. when want to get translation form other file.
@@ -94,7 +93,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @var string
      */
-    private $separator = '.';
+    private string $separator = '.';
 
     /**
      * e.g.
@@ -105,21 +104,21 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @var array
      */
-    private $langFiles = [];
+    private array $langFiles = [];
 
     /**
      * loaded language file list.
      *
      * @var array
      */
-    private $loadedFiles = [];
+    private array $loadedFiles = [];
 
     /**
      * whether ignore not exists lang file when addLangFile()
      *
      * @var bool
      */
-    private $ignoreError = false;
+    private bool $ignoreError = false;
 
     public const DEFAULT_FILE_KEY = '__default';
 
@@ -139,37 +138,31 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
             $file = $this->buildLangFilePath($this->defaultFile . '.' . $this->format);
 
             if (is_file($file)) {
-                $this->data->load($file, $this->format);
+                $this->data->load(ConfigUtil::readFromFile($file, $this->format));
             }
         }
     }
 
     /**
-     * {@inheritdoc}
-     * @throws InvalidArgumentException
-     * @see self::translate()
+     * @see translate()
      */
-    public function t(string $key, array $args = [], $lang = '')
+    public function t(string $key, array $args = [], $lang = ''): string
     {
         return $this->translate($key, $args, $lang);
     }
 
     /**
-     * {@inheritdoc}
-     * @throws InvalidArgumentException
-     * @see self::translate()
+     * @see translate()
      */
-    public function tl(string $key, array $args = [], $lang = '')
+    public function tl(string $key, array $args = [], $lang = ''): string
     {
         return $this->translate($key, $args, $lang);
     }
 
     /**
-     * {@inheritdoc}
-     * @throws InvalidArgumentException
-     * @see self::translate()
+     * @see translate()
      */
-    public function trans(string $key, array $args = [], $lang = '')
+    public function trans(string $key, array $args = [], $lang = ''): string
     {
         return $this->translate($key, $args, $lang);
     }
@@ -178,19 +171,13 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      * how to use language translate ? please see '/doc/language.md'
      *
      * @param string $key
-     * @param array  $args
+     * @param array $args
      * @param string $lang
      *
-     * @return string|array
-     * @throws RangeException
-     * @throws InvalidArgumentException
+     * @return string
      */
-    public function translate(string $key, array $args = [], string $lang = '')
+    public function translate(string $key, array $args = [], string $lang = ''): string
     {
-        if (!is_string($key)) {
-            throw new InvalidArgumentException('The translate key must be a string.');
-        }
-
         $key = trim($key, ' ' . $this->separator);
         if ($key === '') { // '0' is equals False
             throw new InvalidArgumentException('Cannot translate the empty key');
@@ -203,7 +190,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
             $value = $this->transByFallbackLang($key);
 
             // no translate text
-            if ((string)$value === '') {
+            if ($value === '') {
                 if (!empty($args['__default'])) {
                     return $args['__default'];
                 }
@@ -221,13 +208,14 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
 
     /**
      * @param string $key
-     * @param mixed  $value
+     * @param mixed $value
      *
-     * @return mixed
+     * @return self
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value): self
     {
-        return $this->data->set($key, $value);
+        $this->data->set($key, $value);
+        return $this;
     }
 
     /**
@@ -235,7 +223,17 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @return mixed
      */
-    public function has(string $key)
+    public function get(string $key): mixed
+    {
+        return $this->data->get($key);
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function has(string $key): bool
     {
         return $this->data->has($key);
     }
@@ -245,9 +243,9 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @return string|mixed
      */
-    protected function findTranslationText(string $key)
+    protected function findTranslationText(string $key): string
     {
-        if ($val = $this->data->get($key)) {
+        if ($val = $this->data->getString($key)) {
             return $val;
         }
 
@@ -260,11 +258,12 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
         // at first, load language data to collection.
         if ($file = $this->getLangFile($fileKey)) {
             $this->loadedFiles[] = $file;
-            $this->data->set($fileKey, Collection::read($file, $this->format));
-            return $this->data->get($key);
+            $this->data->set($fileKey, ConfigUtil::readFromFile($file, $this->format));
+
+            return $this->data->getString($key);
         }
 
-        return null;
+        return '';
     }
 
     /*********************************************************************************
@@ -274,14 +273,12 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
     /**
      * @param string $key
      *
-     * @return string|mixed
-     * @throws InvalidArgumentException
-     * @throws RangeException
+     * @return string
      */
-    protected function transByFallbackLang(string $key)
+    protected function transByFallbackLang(string $key): string
     {
         if ($this->lang === $this->fallbackLang || !$this->fallbackLang) {
-            return null;
+            return '';
         }
 
         // init fallbackData
@@ -292,12 +289,12 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
                 $file = $this->buildLangFilePath($this->defaultFile . '.' . $this->format, $this->fallbackLang);
 
                 if (is_file($file)) {
-                    $this->fallbackData->load($file, $this->format);
+                    $this->fallbackData->load(ConfigUtil::readFromFile($file, $this->format));
                 }
             }
         }
 
-        if ($val = $this->fallbackData->get($key)) {
+        if ($val = $this->fallbackData->getString($key)) {
             return $val;
         }
 
@@ -313,13 +310,13 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
 
             if (is_file($file)) {
                 $this->loadedFiles[] = $file;
-                $this->fallbackData->set($fileKey, Collection::read($file, $this->format));
+                $this->fallbackData->set($fileKey, ConfigUtil::readFromFile($file, $this->format));
 
-                return $this->fallbackData->get($key);
+                return $this->fallbackData->getString($key);
             }
         }
 
-        return null;
+        return '';
     }
 
     /*********************************************************************************
@@ -339,10 +336,8 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
         }
 
         $langSep = ':';
-
         if (strpos($key, $langSep)) {
             $info = explode($langSep, $key, 2);
-
             if ($this->isLang($info[0])) {
                 return $info;
             }
@@ -486,12 +481,11 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      * is equals to `$lang->tl('key')`.
      *
      * @param string $name
-     * @param array  $args
+     * @param array $args
      *
-     * @return mixed|string
-     * @throws InvalidArgumentException
+     * @return mixed
      */
-    public function __call($name, $args)
+    public function __call(string $name, array $args): mixed
     {
         return $this->translate($name);
     }
@@ -507,7 +501,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
     /**
      * @param string $lang
      */
-    public function setLang(string $lang)
+    public function setLang(string $lang): void
     {
         $this->lang = trim($lang);
     }
@@ -523,7 +517,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
     /**
      * @param string[] $allowed
      */
-    public function setAllowed(array $allowed)
+    public function setAllowed(array $allowed): void
     {
         $this->allowed = $allowed;
     }
@@ -537,11 +531,11 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * @param string|array $path
+     * @param string $path
      *
      * @throws InvalidArgumentException
      */
-    public function setBasePath(string $path)
+    public function setBasePath(string $path): void
     {
         if ($path && is_dir($path)) {
             $this->basePath = $path;
@@ -571,7 +565,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @throws InvalidArgumentException
      */
-    public function setLangFiles(array $langFiles)
+    public function setLangFiles(array $langFiles): void
     {
         foreach ($langFiles as $fileKey => $file) {
             $this->addLangFile($file, is_numeric($fileKey) ? '' : $fileKey);
@@ -583,7 +577,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @return string
      */
-    public function getDefaultFile($full = false): string
+    public function getDefaultFile(bool $full = false): string
     {
         return $full ? $this->getLangFile(self::DEFAULT_FILE_KEY) : $this->defaultFile;
     }
@@ -599,7 +593,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
     /**
      * @param string $fallbackLang
      */
-    public function setFallbackLang(string $fallbackLang)
+    public function setFallbackLang(string $fallbackLang): void
     {
         $this->fallbackLang = $fallbackLang;
     }
@@ -623,9 +617,9 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
     /**
      * @param string $format
      */
-    public function setFormat($format)
+    public function setFormat(string $format): void
     {
-        if (in_array($format, Collection::getFormats(), true)) {
+        if (in_array($format, ConfigUtil::getFormats(), true)) {
             $this->format = $format;
         }
     }
@@ -641,7 +635,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
     /**
      * @param string $separator
      */
-    public function setSeparator($separator)
+    public function setSeparator(string $separator): void
     {
         $this->separator = $separator;
     }
@@ -665,7 +659,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
     /**
      * @param bool $ignoreError
      */
-    public function setIgnoreError($ignoreError)
+    public function setIgnoreError($ignoreError): void
     {
         $this->ignoreError = (bool)$ignoreError;
     }
@@ -733,7 +727,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      * @param mixed $offset <p>
      *                      The offset to assign the value to.
      *                      </p>
-     * @param mixed $value  <p>
+     * @param mixed $value <p>
      *                      The value to set.
      *                      </p>
      *

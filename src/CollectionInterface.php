@@ -1,6 +1,6 @@
 <?php
 
-namespace Toolkit\Collection;
+namespace PhpPkg\Config;
 
 use ArrayAccess;
 use Countable;
@@ -13,7 +13,7 @@ use Serializable;
  */
 interface CollectionInterface extends Serializable, ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
-    public function set($key, $value);
+    public function set(string $key, $value);
 
     public function get(string $key, $default = null);
 
@@ -35,11 +35,11 @@ interface CollectionInterface extends Serializable, ArrayAccess, Countable, Iter
     public function has(string $key): bool;
 
     /**
-     * @param $key
+     * @param string $key
      *
      * @return mixed
      */
-    public function remove($key);
+    public function remove(string $key): void;
 
     /**
      * clear all data

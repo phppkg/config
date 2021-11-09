@@ -1,31 +1,38 @@
 {
-  "name": "toolkit/collection",
+  "name": "phppkg/config",
   "type": "library",
-  "description": "some data collection tool library of the php",
+  "description": "Config manage, load, get. Supports INI,JSON,YAML,NEON,PHP format file",
   "keywords": [
     "library",
-    "tool",
+    "config",
+    "config-manage",
+    "config-load",
+    "ini",
+    "json",
+    "json5",
+    "yaml",
     "php"
   ],
-  "homepage": "https://github.com/php-toolkit/collection",
+  "homepage": "https://github.com/phppkg/config",
   "license": "MIT",
   "authors": [
     {
       "name": "inhere",
       "email": "in.798@qq.com",
-      "homepage": "http://www.yzone.net/"
+      "homepage": "https://github/inhere"
     }
   ],
   "require": {
-    "php": ">7.1.0",
-    "toolkit/arr-utils": "~1.0",
-    "toolkit/str-utils": "~1.0",
-    "toolkit/obj-utils": "~1.0",
-    "toolkit/file-parse": "~1.0"
+    "php": ">=8.0",
+    "phppkg/ini": "~0.1",
+    "colinodell/json5": "^2.2",
+    "nette/neon": "^3.3",
+    "symfony/yaml": "^5.3",
+    "toolkit/stdlib": "~1.0"
   },
   "autoload": {
     "psr-4": {
-      "Toolkit\\Collection\\": "src/"
+      "PhpPkg\\Config\\": "src/"
     }
   }
 }

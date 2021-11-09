@@ -6,20 +6,18 @@
  * Time: 下午3:56
  */
 
-namespace Toolkit\Collection\Test;
+namespace PhpPkg\ConfigTest;
 
 use PHPUnit\Framework\TestCase;
-use Toolkit\Collection\Language;
+use PhpPkg\Config\Language;
 
 /**
  * Class LanguageTest
  *
- * @package Toolkit\Collection\Test
- * @covers  \Toolkit\Collection\Language
+ * @package PhpPkg\ConfigTest
  */
 class LanguageTest extends TestCase
 {
-
     public function testTranslate(): void
     {
         $l = new Language([
