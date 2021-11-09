@@ -23,7 +23,7 @@ class LanguageTest extends TestCase
         $l = new Language([
             'lang'      => 'en',
             'allowed'   => ['en', 'zh-CN'],
-            'basePath'  => __DIR__ . '/testdata',
+            'basePath'  => __DIR__ . '/testdata/language',
             'langFiles' => [
                 'response.php'
             ],
@@ -34,7 +34,6 @@ class LanguageTest extends TestCase
             1   => 'b',
             'k' => 'c',
         ];
-
 
         $msg = $l->tl('response.key');
         $this->assertEquals('message', $msg);

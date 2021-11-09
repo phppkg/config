@@ -39,6 +39,32 @@ class ConfigBox extends Collection
     }
 
     /**
+     * @param string[] $filePaths
+     * @param string $format
+     *
+     * @return static
+     */
+    public static function newFromFiles(array $filePaths, string $format = ''): self
+    {
+        return (new self())->loadFromFiles($filePaths, $format);
+    }
+
+    /**
+     * @param string[] $filePaths
+     * @param string $format
+     *
+     * @return $this
+     */
+    public function loadFromFiles(array $filePaths, string $format = ''): self
+    {
+        foreach ($filePaths as $filePath) {
+            $this->loadFromFile($filePath, $format);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string $filepath
      * @param string $format
      *

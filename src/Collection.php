@@ -37,12 +37,18 @@ use function unserialize;
  */
 class Collection extends \Toolkit\Stdlib\Std\Collection
 {
+
     /**
-     * Property separator.
+     * @var int
+     */
+    public int $mergeDepth = 3;
+
+    /**
+     * The key path separator.
      *
      * @var  string
      */
-    protected string $keyPathSep = '.';
+    public string $keyPathSep = '.';
 
     /**
      * set config value by key/path
@@ -121,6 +127,7 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
     public function load(array|Traversable $data): self
     {
         $this->bindData($this->data, $data);
+
         return $this;
     }
 
@@ -132,26 +139,28 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
     public function loadData(array|Traversable $data): self
     {
         $this->bindData($this->data, $data);
+
         return $this;
     }
 
     /**
      * @param array $parent
      * @param array|Traversable $data
+     * @param int $depth
      */
-    protected function bindData(array &$parent, array|Traversable $data): void
+    protected function bindData(array &$parent, array|Traversable $data, int $depth = 1): void
     {
         foreach ($data as $key => $value) {
             if ($value === null) {
                 continue;
             }
 
-            if (is_array($value)) {
-                if (!isset($parent[$key])) {
-                    $parent[$key] = [];
+            if (is_array($value) && isset($parent[$key]) && is_array($parent[$key])) {
+                if ($depth > $this->mergeDepth) {
+                    $parent[$key] = $value;
+                } else {
+                    $this->bindData($parent[$key], $value, ++$depth);
                 }
-
-                $this->bindData($parent[$key], $value);
             } else {
                 $parent[$key] = $value;
             }
@@ -177,9 +186,7 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
     /**
      * Unset an offset in the iterator.
      *
-     * @param mixed $offset The array offset.
-     *
-     * @return  void
+     * @param mixed $offset
      */
     public function offsetUnset($offset): void
     {

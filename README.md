@@ -20,7 +20,15 @@ composer require phppkg/config
 
 ## Usage
 
+**Config**
 
+```php
+use PhpPkg\Config\ConfigBox;
+
+$config = ConfigBox::new();
+
+$config->getString('name'); // 'inhere'
+```
 
 ## License
 
