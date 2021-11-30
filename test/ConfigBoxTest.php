@@ -22,6 +22,9 @@ class ConfigBoxTest extends TestCase
         ]);
 
         vdump($c);
-        $this->assertEquals('inher', $c->get('name'));
+        $this->assertEquals('inhere', $c->get('name'));
+        $this->assertTrue($c->has('atIni'));
+        $this->assertTrue($c->has('atNeon'));
+        $this->assertTrue($c->has('atYaml'));
     }
 }
