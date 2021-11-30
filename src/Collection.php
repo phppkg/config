@@ -70,11 +70,11 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
 
     /**
      * @param string $key
-     * @param null $default
+     * @param mixed|null $default
      *
      * @return mixed
      */
-    public function get(string $key, $default = null): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
         if ($this->keyPathSep && strpos($key, $this->keyPathSep) > 0) {
             return Arr::getByPath($this->data, $key, $default, $this->keyPathSep);
