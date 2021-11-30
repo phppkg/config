@@ -14,6 +14,8 @@ Config manage, load, get. Supports INI,JSON,YAML,NEON,PHP format file
 
 **composer**
 
+- Required PHP 8.0+
+
 ```bash
 composer require phppkg/config
 ```
