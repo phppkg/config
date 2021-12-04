@@ -35,7 +35,7 @@ class ConfigBox extends Collection
      */
     public static function newFromFile(string $filepath, string $format = ''): self
     {
-        return (new self())->loadFromFile($filepath, $format);
+        return (new static())->loadFromFile($filepath, $format);
     }
 
     /**
@@ -46,7 +46,66 @@ class ConfigBox extends Collection
      */
     public static function newFromFiles(array $filePaths, string $format = ''): self
     {
-        return (new self())->loadFromFiles($filePaths, $format);
+        return (new static())->loadFromFiles($filePaths, $format);
+    }
+
+    /**
+     * @param string $format
+     * @param resource $stream
+     *
+     * @return static
+     */
+    public static function newFromStream(string $format, $stream): self
+    {
+        return (new static())->loadFromStream($format, $stream);
+    }
+
+    /**
+     * @param string $format
+     * @param string $str
+     *
+     * @return static
+     */
+    public static function newFromString(string $format, string $str): self
+    {
+        return self::newFromStrings($format, $str);
+    }
+
+    /**
+     * @param string $format
+     * @param string ...$strings
+     *
+     * @return static
+     */
+    public static function newFromStrings(string $format, string ...$strings): self
+    {
+        return (new static())->loadFromStrings($format, ...$strings);
+    }
+
+    /**
+     * @param string $format
+     * @param resource $stream
+     *
+     * @return static
+     */
+    public function loadFromStream(string $format, $stream): self
+    {
+        // TODO
+
+        return $this;
+    }
+
+    /**
+     * @param string $format
+     * @param string ...$strings
+     *
+     * @return static
+     */
+    public function loadFromStrings(string $format, string ...$strings): self
+    {
+        // TODO
+
+        return $this;
     }
 
     /**

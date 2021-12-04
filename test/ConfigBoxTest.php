@@ -21,7 +21,8 @@ class ConfigBoxTest extends TestCase
             __DIR__ . '/testdata/config.yml',
         ]);
 
-        vdump($c);
+        vdump($c->getData());
+        $this->assertEquals(89, $c->getInt('age'));
         $this->assertEquals('inhere', $c->get('name'));
         $this->assertTrue($c->has('atIni'));
         $this->assertTrue($c->has('atNeon'));

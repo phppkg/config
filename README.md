@@ -35,6 +35,31 @@ $config->loadFromFiles([
     __DIR__ . '/test/testdata/config.yml',
 ]);
 
+// dump config
+vdump($config->getData());
+```
+
+Output:
+
+```php
+CALL ON PhpPkg\ConfigTest\ConfigBoxTest(24):
+object(PhpPkg\Config\ConfigBox)#367 (4) {
+  ["data":protected]=> array(5) {
+    ["name"]=> string(6) "inhere"
+    ["age"]=> int(89)
+    ["atIni"]=> string(6) "value0"
+    ["atNeon"]=> string(6) "value1"
+    ["atYaml"]=> string(6) "value2"
+  }
+  ["mergeDepth"]=> int(3)
+  ["keyPathSep"]=> string(1) "."
+  ["name":protected]=> string(6) "config"
+}
+```
+
+### Get value
+
+```php
 $config->getInt('age'); // int(89)
 $config->getString('name'); // string('inhere')
 ```

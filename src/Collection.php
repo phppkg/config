@@ -103,6 +103,14 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
     }
 
     /**
+     * @return array
+     */
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    /**
      * @return string
      */
     public function getKeyPathSep(): string
