@@ -212,7 +212,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @return self
      */
-    public function set(string $key, $value): self
+    public function set(string $key, mixed $value): self
     {
         $this->data->set($key, $value);
         return $this;
@@ -241,7 +241,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
     /**
      * @param string $key
      *
-     * @return string|mixed
+     * @return string
      */
     protected function findTranslationText(string $key): string
     {
@@ -306,7 +306,9 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
 
         // the first times fetch, instantiate lang data
         if ($file = $this->getLangFile($fileKey)) {
-            $file = str_replace("/{$this->lang}/", "/{$this->fallbackLang}/", $file);
+            $lang = $this->lang;
+            $fbLa = $this->fallbackLang;
+            $file = str_replace("/$lang/", "/$fbLa/", $file);
 
             if (is_file($file)) {
                 $this->loadedFiles[] = $file;
@@ -389,7 +391,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @throws InvalidArgumentException
      */
-    public function addLangFile(string $file, string $fileKey = null)
+    public function addLangFile(string $file, string $fileKey = ''): void
     {
         if (!FileSystem::isAbsPath($file)) {
             $file = $this->buildLangFilePath($file);
@@ -460,19 +462,18 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @param string $name
      *
-     * @return mixed|string
-     * @throws InvalidArgumentException
+     * @return string
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         return $this->translate($name);
     }
 
-    public function __isset($name)
+    public function __isset(string $name)
     {
     }
 
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
     }
 
@@ -659,9 +660,9 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
     /**
      * @param bool $ignoreError
      */
-    public function setIgnoreError($ignoreError): void
+    public function setIgnoreError(bool $ignoreError): void
     {
-        $this->ignoreError = (bool)$ignoreError;
+        $this->ignoreError = $ignoreError;
     }
 
     /*********************************************************************************
@@ -686,13 +687,10 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @link  http://php.net/manual/en/arrayaccess.offsetexists.php
      *
-     * @param mixed $offset <p>
-     *                      An offset to check for.
-     *                      </p>
+     * @param mixed $offset An offset to check for.
      *
      * @return boolean true on success or false on failure.
-     * </p>
-     * <p>
+     *
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
      */
@@ -706,15 +704,13 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @link  http://php.net/manual/en/arrayaccess.offsetget.php
      *
-     * @param mixed $offset <p>
-     *                      The offset to retrieve.
-     *                      </p>
+     * @param mixed $offset The offset to retrieve.
      *
      * @return mixed Can return all value types.
      * @since 5.0.0
      * @throws InvalidArgumentException
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->translate($offset);
     }
@@ -724,12 +720,8 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @link  http://php.net/manual/en/arrayaccess.offsetset.php
      *
-     * @param mixed $offset <p>
-     *                      The offset to assign the value to.
-     *                      </p>
-     * @param mixed $value <p>
-     *                      The value to set.
-     *                      </p>
+     * @param mixed $offset The offset to assign the value to.
+     * @param mixed $value The value to set.
      *
      * @return void
      * @since 5.0.0
@@ -744,9 +736,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @link  http://php.net/manual/en/arrayaccess.offsetunset.php
      *
-     * @param mixed $offset <p>
-     *                      The offset to unset.
-     *                      </p>
+     * @param mixed $offset The offset to unset.
      *
      * @return void
      * @since 5.0.0
@@ -761,10 +751,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @link  http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
-     * </p>
-     * <p>
      * The return value is cast to an integer.
-     * @since 5.1.0
      */
     public function count(): int
     {

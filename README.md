@@ -5,10 +5,11 @@
 [![Latest Stable Version](http://img.shields.io/packagist/v/phppkg/config.svg)](https://packagist.org/packages/phppkg/config)
 [![Actions Status](https://github.com/phppkg/easytpl/workflows/Unit-Tests/badge.svg)](https://github.com/phppkg/easytpl/actions)
 
-Config manage, load, get. Supports INI,JSON,YAML,NEON,PHP format file
+Config load, management, get, set and more.
 
-- Config data manage
-- Language manage
+- Config data load, management
+- Supports INI,JSON,YAML,NEON,PHP format file
+- Language data management
 
 ## Install
 
@@ -28,8 +29,14 @@ composer require phppkg/config
 use PhpPkg\Config\ConfigBox;
 
 $config = ConfigBox::new();
+$config->loadFromFiles([
+    __DIR__ . '/test/testdata/config.ini',
+    __DIR__ . '/test/testdata/config.neon',
+    __DIR__ . '/test/testdata/config.yml',
+]);
 
-$config->getString('name'); // 'inhere'
+$config->getInt('age'); // int(89)
+$config->getString('name'); // string('inhere')
 ```
 
 ## License

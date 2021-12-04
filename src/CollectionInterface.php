@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace PhpPkg\Config;
 
@@ -6,21 +6,20 @@ use ArrayAccess;
 use Countable;
 use IteratorAggregate;
 use JsonSerializable;
-use Serializable;
 
 /**
  * Collection Interface
  */
-interface CollectionInterface extends Serializable, ArrayAccess, Countable, IteratorAggregate, JsonSerializable
+interface CollectionInterface extends  ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
-    public function set(string $key, $value);
+    public function set(string $key, mixed $value): void;
 
-    public function get(string $key, $default = null);
+    public function get(string $key, $default = null): mixed;
 
     /**
      * @param array $items
      */
-    public function replace(array $items);
+    public function replace(array $items): void;
 
     /**
      * @return array
@@ -44,5 +43,5 @@ interface CollectionInterface extends Serializable, ArrayAccess, Countable, Iter
     /**
      * clear all data
      */
-    public function clear();
+    public function clear(): void;
 }
