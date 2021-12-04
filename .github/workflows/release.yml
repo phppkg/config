@@ -62,8 +62,6 @@ jobs:
         with:
           name: ${{ env.RELEASE_TAG }}
           tag_name: ${{ env.RELEASE_TAG }}
-           body_path: changelog.md
-          # files: kite-${{ env.RELEASE_TAG }}.phar
+          body_path: changelog.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         GITHUB_REPOSITORY: my_gh_org/my_gh_repo
