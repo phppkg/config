@@ -4,6 +4,9 @@ namespace PhpPkg\ConfigTest;
 
 use PhpPkg\Config\ConfigBox;
 use PHPUnit\Framework\TestCase;
+use Toolkit\FsUtil\File;
+use function fclose;
+use function fopen;
 use function vdump;
 
 /**
@@ -62,5 +65,20 @@ key1: 'val1'
         $this->assertEquals('val1', $c->get('key1'));
         $this->assertEquals('val2', $c->get('key2'));
         $this->assertEquals('val4', $c->get('key4'));
+    }
+
+    public function testLoadFromStream(): void
+    {
+        $s1 = fopen(__DIR__ . '/testdata/config.json', 'rb+');
+        $c = ConfigBox::newFromStream(ConfigBox::FORMAT_JSON, $s1);
+        fclose($s1);
+
+        $this->assertNotEmpty($c->all());
+        $this->assertEquals('val at json', $c->get('atJson'));
+
+        $s2 = fopen(__DIR__ . '/testdata/config.yml', 'rb+');
+        $c->loadFromStream(ConfigBox::FORMAT_YML, $s2);
+        fclose($s2);
+        $this->assertEquals('val at yaml', $c->get('atYaml'));
     }
 }
