@@ -2,9 +2,6 @@
 
 namespace PhpPkg\Config;
 
-use InvalidArgumentException;
-use Toolkit\FsUtil\File;
-
 /**
  * class ConfigBox
  *
@@ -90,9 +87,9 @@ class ConfigBox extends Collection
      */
     public function loadFromStream(string $format, $stream): self
     {
-        // TODO
+        $data = ConfigUtil::readFromStream($format, $stream);
 
-        return $this;
+        return $this->load($data);
     }
 
     /**
@@ -103,7 +100,12 @@ class ConfigBox extends Collection
      */
     public function loadFromStrings(string $format, string ...$strings): self
     {
-        // TODO
+        foreach ($strings as $str) {
+            $data = ConfigUtil::readFromString($format, $str);
+
+            // load and merge to data.
+            $this->load($data);
+        }
 
         return $this;
     }
@@ -131,32 +133,9 @@ class ConfigBox extends Collection
      */
     public function loadFromFile(string $filepath, string $format = ''): self
     {
-        $format = $format ?: File::getExtension($filepath, true);
-        switch ($format) {
-            case self::FORMAT_INI:
-                $this->loadIniFile($filepath);
-                break;
-            case self::FORMAT_PHP:
-                $this->loadPhpFile($filepath);
-                break;
-            case self::FORMAT_NEON:
-                $this->loadNeonFile($filepath);
-                break;
-            case self::FORMAT_JSON:
-                $this->loadJsonFile($filepath);
-                break;
-            case self::FORMAT_JSON5:
-                $this->loadJson5File($filepath);
-                break;
-            case self::FORMAT_YML;
-            case self::FORMAT_YAML :
-                $this->loadYamlFile($filepath);
-                break;
-            default:
-                throw new InvalidArgumentException('unknown file format: ' . $format);
-        }
+        $data = ConfigUtil::readFromFile($filepath, $format);
 
-        return $this;
+        return $this->load($data);
     }
 
     /**

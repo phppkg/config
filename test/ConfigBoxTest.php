@@ -19,13 +19,48 @@ class ConfigBoxTest extends TestCase
             __DIR__ . '/testdata/config.ini',
             __DIR__ . '/testdata/config.neon',
             __DIR__ . '/testdata/config.yml',
+            __DIR__ . '/testdata/config.php',
+            __DIR__ . '/testdata/config.json',
+            __DIR__ . '/testdata/config.json5',
         ]);
 
         vdump($c->getData());
         $this->assertEquals(89, $c->getInt('age'));
         $this->assertEquals('inhere', $c->get('name'));
+
         $this->assertTrue($c->has('atIni'));
+        $this->assertTrue($c->has('atPhp'));
         $this->assertTrue($c->has('atNeon'));
         $this->assertTrue($c->has('atYaml'));
+        $this->assertTrue($c->has('atJson'));
+        $this->assertTrue($c->has('atJson5'));
+
+        // get by path
+        $this->assertEquals(23, $c->getInt('arr0.1'));
+        $this->assertEquals('val0', $c->getString('map0.key0'));
+    }
+
+    public function testNewFromStrings(): void
+    {
+        $c = ConfigBox::newFromStrings('ini', '
+# comments
+key0 = val0
+        ');
+
+        $c->loadFromStrings(ConfigBox::FORMAT_JSON5, "{
+// comments
+key1: 'val1'
+        }");
+
+        $c->loadFromStrings(ConfigBox::FORMAT_JSON, '{"key2": "val2"}');
+        $c->loadFromStrings(ConfigBox::FORMAT_YAML, 'key3: val3');
+        $c->loadFromStrings(ConfigBox::FORMAT_NEON, 'key4: val4');
+
+        vdump($data = $c->toArray());
+        $this->assertNotEmpty($data);
+        $this->assertEquals('val0', $c->get('key0'));
+        $this->assertEquals('val1', $c->get('key1'));
+        $this->assertEquals('val2', $c->get('key2'));
+        $this->assertEquals('val4', $c->get('key4'));
     }
 }
