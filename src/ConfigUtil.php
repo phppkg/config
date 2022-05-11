@@ -8,6 +8,7 @@ use PhpPkg\Ini\Ini;
 use Symfony\Component\Yaml\Parser;
 use Toolkit\FsUtil\File;
 use Toolkit\Stdlib\OS;
+use Yosymfony\Toml\Toml;
 use function in_array;
 use function json5_decode;
 use function json_decode;
@@ -38,6 +39,7 @@ class ConfigUtil
             ConfigBox::FORMAT_JSON5,
             ConfigBox::FORMAT_YML,
             ConfigBox::FORMAT_YAML,
+            ConfigBox::FORMAT_TOML,
         ];
     }
 
@@ -88,6 +90,7 @@ class ConfigUtil
             ConfigBox::FORMAT_NEON => Neon::decode($str),
             ConfigBox::FORMAT_JSON => json_decode($str, true, 512, self::$jsonFlags),
             ConfigBox::FORMAT_JSON5 => json5_decode($str, true, 512, self::$jsonFlags),
+            ConfigBox::FORMAT_TOML => self::parseTomlString($str),
             ConfigBox::FORMAT_YML, ConfigBox::FORMAT_YAML => self::parseYamlString($str),
             default => throw new InvalidArgumentException('unknown config format: ' . $format),
         };
@@ -192,5 +195,25 @@ class ConfigUtil
     {
         $parser = new Parser();
         return $parser->parse($yaml, $flags);
+    }
+
+    /**
+     * @param string $filepath
+     *
+     * @return array
+     */
+    public static function parseTomlFile(string $filepath): array
+    {
+        return Toml::parseFile($filepath);
+    }
+
+    /**
+     * @param string $toml
+     *
+     * @return array
+     */
+    public static function parseTomlString(string $toml): array
+    {
+        return Toml::parse($toml);
     }
 }

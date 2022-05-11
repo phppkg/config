@@ -13,6 +13,7 @@ class ConfigBox extends Collection
     public const FORMAT_PHP   = 'php';
     public const FORMAT_YML   = 'yml';
     public const FORMAT_YAML  = 'yaml';
+    public const FORMAT_TOML  = 'toml';
     public const FORMAT_NEON  = 'neon';
     public const FORMAT_JSON  = 'json';
     public const FORMAT_JSON5 = 'json5';
@@ -196,6 +197,16 @@ class ConfigBox extends Collection
     public function loadYamlFile(string $filepath): self
     {
         return $this->load(ConfigUtil::readYamlData($filepath));
+    }
+
+    /**
+     * @param string $filepath
+     *
+     * @return $this
+     */
+    public function loadTomlFile(string $filepath): self
+    {
+        return $this->load(ConfigUtil::parseTomlFile($filepath));
     }
 
     /**

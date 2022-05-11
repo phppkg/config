@@ -4,7 +4,6 @@ namespace PhpPkg\ConfigTest;
 
 use PhpPkg\Config\ConfigBox;
 use PHPUnit\Framework\TestCase;
-use Toolkit\FsUtil\File;
 use function fclose;
 use function fopen;
 use function vdump;
@@ -22,6 +21,7 @@ class ConfigBoxTest extends TestCase
             __DIR__ . '/testdata/config.ini',
             __DIR__ . '/testdata/config.neon',
             __DIR__ . '/testdata/config.yml',
+            __DIR__ . '/testdata/config.toml',
             __DIR__ . '/testdata/config.php',
             __DIR__ . '/testdata/config.json',
             __DIR__ . '/testdata/config.json5',
@@ -37,6 +37,7 @@ class ConfigBoxTest extends TestCase
         $this->assertTrue($c->has('atYaml'));
         $this->assertTrue($c->has('atJson'));
         $this->assertTrue($c->has('atJson5'));
+        $this->assertTrue($c->has('atToml'));
 
         // get by path
         $this->assertEquals(23, $c->getInt('arr0.1'));

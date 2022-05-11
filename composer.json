@@ -11,6 +11,7 @@
     "json",
     "json5",
     "yaml",
+    "toml",
     "php"
   ],
   "homepage": "https://github.com/phppkg/config",
@@ -28,6 +29,7 @@
     "colinodell/json5": "^2.2",
     "nette/neon": "^3.3",
     "symfony/yaml": "^6.0",
+    "yosymfony/toml": "^1.0",
     "toolkit/fsutil": "^2.0",
     "toolkit/stdlib": "^2.0"
   },
