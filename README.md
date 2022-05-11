@@ -8,7 +8,7 @@
 Config load, management, get, set and more.
 
 - Config data load, management
-- Supports INI,JSON,YAML,NEON,PHP format file
+- Supports INI,JSON,YAML,TOML,NEON,PHP format file
 - Language data management
 
 ## Install
@@ -33,6 +33,7 @@ $config->loadFromFiles([
     __DIR__ . '/test/testdata/config.ini',
     __DIR__ . '/test/testdata/config.neon',
     __DIR__ . '/test/testdata/config.yml',
+    __DIR__ . '/test/testdata/config.toml',
 ]);
 
 // dump config
@@ -58,6 +59,7 @@ array(7) {
   }
   ["atNeon"]=> string(6) "value1"
   ["atYaml"]=> string(6) "value2"
+  ["atToml"]=> string(6) "val at toml"
 }
 ```
 
