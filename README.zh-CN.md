@@ -5,17 +5,17 @@
 [![Latest Stable Version](http://img.shields.io/packagist/v/phppkg/config.svg)](https://packagist.org/packages/phppkg/config)
 [![Actions Status](https://github.com/phppkg/easytpl/workflows/Unit-Tests/badge.svg)](https://github.com/phppkg/easytpl/actions)
 
-Config load, management, merge, get, set and more.
+PHP的配置数据加载,管理,获取,支持多种数据格式.
 
-- Config data load, management
-- Support load multi config data, will auto merge
-- Supports INI,JSON,YAML,TOML,NEON,PHP format file
-- Support for exporting configuration data to file
-- Language data management
+- 配置数据加载,管理,获取
+- 支持加载多个配置数据，会自动合并
+- 支持 INI,JSON,YAML,TOML,NEON,PHP 等格式的文件内容
+- 支持导出整个配置数据到文件
+- 简单的多语言配置数据管理
 
-> **[中文说明](README.zh-CN.md)**
+> **[EN README](README.md)**
 
-## Install
+## 安装
 
 **composer**
 
@@ -25,9 +25,9 @@ Config load, management, merge, get, set and more.
 composer require phppkg/config
 ```
 
-## Usage
+## 快速开始
 
-create and load config data.
+先创建一个配置实例,就可以加载指定的配置数据了.
 
 ```php
 use PhpPkg\Config\ConfigBox;
@@ -39,12 +39,16 @@ $config->loadFromFiles([
     __DIR__ . '/test/testdata/config.yml',
     __DIR__ . '/test/testdata/config.toml',
 ]);
+```
 
+### 查看加载的数据
+
+```php
 // dump config
 vdump($config->getData());
 ```
 
-Output:
+**Output**:
 
 ```php
 CALL ON PhpPkg\ConfigTest\ConfigBoxTest(24):
@@ -67,7 +71,9 @@ array(7) {
 }
 ```
 
-## Get value
+## 获取值
+
+可以获取指定类型的返回值,同时支持链式key方式获取值
 
 ```php
 /** @var PhpPkg\Config\ConfigBox $config */
@@ -81,7 +87,7 @@ $config->getInt('arr0.1'); // int(23)
 $config->getString('map0.key0'); // string('val0')
 ```
 
-## Set value
+## 设置值
 
 ```php
 /** @var PhpPkg\Config\ConfigBox $config */
@@ -89,9 +95,9 @@ $config->set('name', 'INHERE');
 $config->set('map0.key0', 'new value');
 ```
 
-## Export to file
+## 导出到文件
 
-Export config data to file.
+支持导出整个配置数据到文件.
 
 ```php
 use PhpPkg\Config\ConfigBox;
