@@ -36,7 +36,7 @@ interface CollectionInterface extends  ArrayAccess, Countable, IteratorAggregate
     /**
      * @param string $key
      *
-     * @return mixed
+     * @return void
      */
     public function remove(string $key): void;
 

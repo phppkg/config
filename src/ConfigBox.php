@@ -2,6 +2,11 @@
 
 namespace PhpPkg\Config;
 
+use JsonException;
+use RuntimeException;
+use Toolkit\FsUtil\File;
+use const JSON_PRETTY_PRINT;
+
 /**
  * class ConfigBox
  *
@@ -24,6 +29,16 @@ class ConfigBox extends Collection
      * @var string
      */
     protected string $name = 'config';
+
+    /**
+     * Encode flags on export data to file
+     *
+     * @var array{string: int}
+     */
+    protected array $encodeFlags = [
+        self::FORMAT_JSON  => JSON_PRETTY_PRINT,
+        self::FORMAT_JSON5 => JSON_PRETTY_PRINT,
+    ];
 
     /**
      * @param string $filepath
@@ -113,7 +128,7 @@ class ConfigBox extends Collection
 
     /**
      * @param string[] $filePaths
-     * @param string $format
+     * @param string $format  If is empty, will parse from filepath.
      *
      * @return $this
      */
@@ -128,7 +143,7 @@ class ConfigBox extends Collection
 
     /**
      * @param string $filepath
-     * @param string $format
+     * @param string $format  If is empty, will parse from filepath.
      *
      * @return $this
      */
@@ -210,6 +225,28 @@ class ConfigBox extends Collection
     }
 
     /**
+     * Export config data to file
+     *
+     * @param string $filepath
+     * @param string $format If is empty, will parse from filepath.
+     *
+     * @return void
+     */
+    public function exportTo(string $filepath, string $format = ''): void
+    {
+        $format = $format ?: File::getExtension($filepath, true);
+        $encFlag = $this->encodeFlags[$format] ?? 0;
+
+        try {
+            $string = ConfigUtil::encodeToString($this->data, $format, $encFlag);
+        } catch (JsonException $e) {
+            throw new RuntimeException('export data error: ' . $e->getMessage(), $e->getCode(), $e);
+        }
+
+        File::mkdirSave($filepath, $string);
+    }
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -223,5 +260,23 @@ class ConfigBox extends Collection
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @param string $format
+     * @param int $encodeFlag
+     */
+    public function setEncodeFlag(string $format, int $encodeFlag): void
+    {
+        ConfigUtil::assertFormat($format);
+        $this->encodeFlags[$format] = $encodeFlag;
+    }
+
+    /**
+     * @param array $encodeFlags
+     */
+    public function setEncodeFlags(array $encodeFlags): void
+    {
+        $this->encodeFlags = $encodeFlags;
     }
 }

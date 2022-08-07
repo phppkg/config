@@ -59,6 +59,7 @@ key1: 'val1'
         $c->loadFromStrings(ConfigBox::FORMAT_JSON, '{"key2": "val2"}');
         $c->loadFromStrings(ConfigBox::FORMAT_YAML, 'key3: val3');
         $c->loadFromStrings(ConfigBox::FORMAT_NEON, 'key4: val4');
+        $c->set('arrKey', ['abc', 'def']);
 
         vdump($data = $c->toArray());
         $this->assertNotEmpty($data);
@@ -66,6 +67,9 @@ key1: 'val1'
         $this->assertEquals('val1', $c->get('key1'));
         $this->assertEquals('val2', $c->get('key2'));
         $this->assertEquals('val4', $c->get('key4'));
+
+        $c->exportTo(__DIR__ . '/testdata/export.php');
+        $c->exportTo(__DIR__ . '/testdata/export.json');
     }
 
     public function testLoadFromStream(): void

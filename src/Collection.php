@@ -10,8 +10,10 @@ namespace PhpPkg\Config;
 
 use RecursiveArrayIterator;
 use Toolkit\Stdlib\Arr;
+use Toolkit\Stdlib\Php;
 use Traversable;
 use function is_array;
+use function is_string;
 use function serialize;
 use function strpos;
 use function unserialize;
@@ -31,6 +33,7 @@ use function unserialize;
  *          ]
  *       ]
  * ];
+ *
  * $config = new Collection();
  * $config->get('foo.bar.yoo')` equals to $data['foo']['bar']['yoo'];
  * ```
@@ -103,14 +106,6 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
     }
 
     /**
-     * @return array
-     */
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
-    /**
      * @return string
      */
     public function getKeyPathSep(): string
@@ -175,6 +170,26 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
     }
 
     /**
+     * @param string $key
+     * @param class-string|object $obj
+     *
+     * @return object
+     */
+    public function bindTo(string $key, string|object $obj): object
+    {
+        // is class string
+        if (is_string($obj)) {
+            $obj = new $obj();
+        }
+
+        if ($data = $this->getArray($key)) {
+            Php::initObject($obj, $data);
+        }
+
+        return $obj;
+    }
+
+    /**
      * @return array
      */
     public function getKeys(): array
@@ -200,10 +215,26 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
         $this->set($offset, null);
     }
 
-    public function __clone()
+    public function __clone(): void
     {
         $this->data = unserialize(serialize($this->data), [
             'allowed_classes' => self::class
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function toString(): string
+    {
+        return Php::dumpVars($this->data);
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->toString();
     }
 }

@@ -5,14 +5,20 @@ namespace PhpPkg\Config;
 use InvalidArgumentException;
 use Nette\Neon\Neon;
 use PhpPkg\Ini\Ini;
+use RuntimeException;
 use Symfony\Component\Yaml\Parser;
+use Symfony\Component\Yaml\Yaml;
 use Toolkit\FsUtil\File;
 use Toolkit\Stdlib\OS;
+use Toolkit\Stdlib\Php;
 use Yosymfony\Toml\Toml;
 use function in_array;
 use function json5_decode;
 use function json_decode;
+use function json_encode;
+use function rtrim;
 use const JSON_BIGINT_AS_STRING;
+use const JSON_THROW_ON_ERROR;
 
 /**
  * class ConfigReader
@@ -65,6 +71,19 @@ class ConfigUtil
 
     /**
      * @param string $format
+     *
+     * @return string
+     */
+    public static function resolveFormat(string $format): string
+    {
+        if ($format === ConfigBox::FORMAT_YML) {
+            return ConfigBox::FORMAT_YAML;
+        }
+        return $format;
+    }
+
+    /**
+     * @param string $format
      * @param resource $stream
      *
      * @return array
@@ -97,6 +116,35 @@ class ConfigUtil
     }
 
     /**
+     * @param array $data
+     * @param string $format
+     * @param int $flags
+     *
+     * @return string
+     * @throws \JsonException
+     */
+    public static function encodeToString(array $data, string $format, int $flags = 0): string
+    {
+        switch ($format) {
+            case ConfigBox::FORMAT_INI:
+            case ConfigBox::FORMAT_TOML:
+                throw new RuntimeException('not support encode data to ' . $format);
+            case ConfigBox::FORMAT_PHP:
+                $codes = rtrim(Php::exportVar($data));
+                return "<?php\n// auto exported by phppkg/config\n\nreturn $codes;\n";
+            case ConfigBox::FORMAT_NEON:
+                return Neon::encode($data, true);
+            case ConfigBox::FORMAT_YML:
+            case ConfigBox::FORMAT_YAML:
+                return Yaml::dump($data, 2, 4, $flags);
+            case ConfigBox::FORMAT_JSON:
+            case ConfigBox::FORMAT_JSON5:
+            default:
+                return json_encode($data, $flags|JSON_THROW_ON_ERROR);
+        }
+    }
+
+    /**
      * read data from file
      *
      * @param string $filepath
@@ -113,7 +161,6 @@ class ConfigUtil
         }
 
         $str = File::readAll($filepath);
-
         return self::readFromString($format, $str);
     }
 
@@ -181,8 +228,7 @@ class ConfigUtil
      */
     public static function readYamlData(string $filepath, int $flags = 0): array
     {
-        $parser = new Parser();
-        return $parser->parseFile($filepath, $flags);
+        return (new Parser())->parseFile($filepath, $flags);
     }
 
     /**
@@ -193,8 +239,7 @@ class ConfigUtil
      */
     public static function parseYamlString(string $yaml, int $flags = 0): array
     {
-        $parser = new Parser();
-        return $parser->parse($yaml, $flags);
+        return (new Parser())->parse($yaml, $flags);
     }
 
     /**
