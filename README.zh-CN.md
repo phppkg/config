@@ -41,6 +41,19 @@ $config->loadFromFiles([
 ]);
 ```
 
+### 其他方式创建
+
+### 更多加载方法
+
+- `loadFromFiles(array $filePaths, string $format = '')`
+- `loadFromStrings(string $format, string ...$strings)`
+- `loadFromSteam(string $format, resource $stream)`
+- `loadIniFile(string $filepath)`
+- `loadJsonFile(string $filepath)`
+- `loadJson5File(string $filepath)`
+- `loadYamlFile(string $filepath)`
+- `loadPhpFile(string $filepath)`
+
 ### 查看加载的数据
 
 ```php
@@ -93,6 +106,13 @@ $config->getString('map0.key0'); // string('val0')
 /** @var PhpPkg\Config\ConfigBox $config */
 $config->set('name', 'INHERE');
 $config->set('map0.key0', 'new value');
+
+// set multi at once
+$config->sets([
+    'key1' => 'value1',
+    'key2' => 'value2',
+    // ...
+]);
 ```
 
 ## 导出到文件
@@ -106,12 +126,6 @@ use PhpPkg\Config\ConfigBox;
 $config->exportTo('/path/to/file.json');
 $config->exportTo('/path/to/my.conf', ConfigBox::FORMAT_YAML);
 ```
-
-## More load methods
-
-- `loadFromFiles(array $filePaths, string $format = '')`
-- `loadFromStrings(string $format, string ...$strings)`
-- `loadFromSteam(string $format, resource $stream)`
 
 ## License
 

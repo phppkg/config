@@ -27,7 +27,7 @@ composer require phppkg/config
 
 ## Usage
 
-create and load config data.
+create and load config data. load multi file, will auto merge data.
 
 ```php
 use PhpPkg\Config\ConfigBox;
@@ -39,12 +39,39 @@ $config->loadFromFiles([
     __DIR__ . '/test/testdata/config.yml',
     __DIR__ . '/test/testdata/config.toml',
 ]);
+```
 
+### Created in other ways
+
+```php
+use PhpPkg\Config\ConfigBox;
+
+$config = ConfigBox::newFromFiles([
+    // ... config file list
+]);
+
+$config->loadIniFile('path/to/my.ini')
+```
+
+### More load methods
+
+- `loadFromFiles(array $filePaths, string $format = '')`
+- `loadFromStrings(string $format, string ...$strings)`
+- `loadFromSteam(string $format, resource $stream)`
+- `loadIniFile(string $filepath)`
+- `loadJsonFile(string $filepath)`
+- `loadJson5File(string $filepath)`
+- `loadYamlFile(string $filepath)`
+- `loadPhpFile(string $filepath)`
+
+### Dump data
+
+```php
 // dump config
 vdump($config->getData());
 ```
 
-Output:
+**Output**:
 
 ```php
 CALL ON PhpPkg\ConfigTest\ConfigBoxTest(24):
@@ -87,6 +114,13 @@ $config->getString('map0.key0'); // string('val0')
 /** @var PhpPkg\Config\ConfigBox $config */
 $config->set('name', 'INHERE');
 $config->set('map0.key0', 'new value');
+
+// set multi at once
+$config->sets([
+    'key1' => 'value1',
+    'key2' => 'value2',
+    // ...
+]);
 ```
 
 ## Export to file
@@ -100,12 +134,6 @@ use PhpPkg\Config\ConfigBox;
 $config->exportTo('/path/to/file.json');
 $config->exportTo('/path/to/my.conf', ConfigBox::FORMAT_YAML);
 ```
-
-## More load methods
-
-- `loadFromFiles(array $filePaths, string $format = '')`
-- `loadFromStrings(string $format, string ...$strings)`
-- `loadFromSteam(string $format, resource $stream)`
 
 ## License
 

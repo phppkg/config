@@ -9,3 +9,4 @@ composer.lock
 *.patch
 *.cache
 .DS_Store
+test/testdata/
