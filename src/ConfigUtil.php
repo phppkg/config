@@ -127,6 +127,7 @@ class ConfigUtil
     {
         switch ($format) {
             case ConfigBox::FORMAT_INI:
+                return Ini::encode($data, $flags);
             case ConfigBox::FORMAT_TOML:
                 throw new RuntimeException('not support encode data to ' . $format);
             case ConfigBox::FORMAT_PHP:
