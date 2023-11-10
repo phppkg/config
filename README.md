@@ -5,7 +5,7 @@
 [![Latest Stable Version](http://img.shields.io/packagist/v/phppkg/config.svg)](https://packagist.org/packages/phppkg/config)
 [![Actions Status](https://github.com/phppkg/config/workflows/Unit-Tests/badge.svg)](https://github.com/phppkg/config/actions)
 
-Config load, management, merge, get, set and more.
+🗂 Config load, management, merge, get, set and more.
 
 - Config data load, management
 - Support load multi config data, will auto merge
@@ -134,6 +134,15 @@ use PhpPkg\Config\ConfigBox;
 $config->exportTo('/path/to/file.json');
 $config->exportTo('/path/to/my.conf', ConfigBox::FORMAT_YAML);
 ```
+
+## PHPPkg Projects
+
+- [phppkg/config](https://github.com/phppkg/config) - 🗂 Config load, management, merge, get, set and more.
+- [phppkg/easytpl](https:://github.com/phppkg/easytpl) - ⚡️ Simple and fastly template engine for PHP
+- [phppkg/http-client](https:://github.com/phppkg/http-client) - An easy-to-use HTTP client library for PHP
+- [phppkg/ini](https:://github.com/phppkg/ini) - 💪 An enhanced `INI` format parser written in PHP.
+- [phppkg/jenkins-client](https:://github.com/phppkg/jenkins-client) - Designed to interact with Jenkins CI using its API.
+- [phppkg/phpgit](https:://github.com/phppkg/phpgit) - A Git wrapper library for PHP
 
 ## License
 
