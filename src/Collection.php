@@ -122,11 +122,11 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
     }
 
     /**
-     * @param array|Traversable $data
+     * @param iterable $data
      *
      * @return $this
      */
-    public function load(array|Traversable $data): self
+    public function load(iterable $data): self
     {
         $this->bindData($this->data, $data);
 
@@ -134,11 +134,11 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
     }
 
     /**
-     * @param array|Traversable $data
+     * @param iterable $data
      *
      * @return $this
      */
-    public function loadData(array|Traversable $data): self
+    public function loadData(iterable $data): self
     {
         $this->bindData($this->data, $data);
 
@@ -147,10 +147,10 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
 
     /**
      * @param array $parent
-     * @param array|Traversable $data
+     * @param iterable $data
      * @param int $depth
      */
-    protected function bindData(array &$parent, array|Traversable $data, int $depth = 1): void
+    protected function bindData(array &$parent, iterable $data, int $depth = 1): void
     {
         foreach ($data as $key => $value) {
             if ($value === null) {
