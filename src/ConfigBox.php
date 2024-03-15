@@ -40,26 +40,60 @@ class ConfigBox extends Collection
         self::FORMAT_JSON5 => JSON_PRETTY_PRINT,
     ];
 
+    //
+    // ============================== Global instance ===============================
+    //
+
+    /**
+     * @var ConfigBox|null
+     */
+    private static ?self $std;
+
+    /**
+     * @return ConfigBox
+     */
+    public static function std(): ConfigBox
+    {
+        if (!self::$std) {
+            self::$std = new ConfigBox();
+        }
+        return self::$std;
+    }
+
+    /**
+     * reset global instance
+     */
+    public static function resetStd(): void
+    {
+        self::$std = null;
+    }
+
+    //
+    // ============================== Quickly create ===============================
+    //
+
     /**
      * @param string $filepath
      * @param string $format
+     * @param bool   $onExists
      *
      * @return static
      */
-    public static function newFromFile(string $filepath, string $format = ''): self
+    public static function newFromFile(string $filepath, string $format = '', bool $onExists = false): self
     {
-        return (new static())->loadFromFile($filepath, $format);
+        return (new static())->loadFromFile($filepath, $format, $onExists);
     }
 
     /**
      * @param string[] $filePaths
-     * @param string $format
+     * @param string   $format
+     * @param bool     $onExists
      *
      * @return static
      */
-    public static function newFromFiles(array $filePaths, string $format = ''): self
+    public static function newFromFiles(array $filePaths, string $format = '', bool $onExists = false): self
     {
-        return (new static())->loadFromFiles($filePaths, $format);
+        return (new static())->loadFromFiles($filePaths, $format, $onExists);
     }
 
     /**
@@ -95,6 +129,10 @@ class ConfigBox extends Collection
         return (new static())->loadFromStrings($format, ...$strings);
     }
 
+    //
+    // ============================== load config data ===============================
+    //
+
     /**
      * @param string $format
      * @param resource $stream
@@ -129,28 +167,32 @@ class ConfigBox extends Collection
     /**
      * @param string[] $filePaths
      * @param string $format  If is empty, will parse from filepath.
+     * @param bool   $onExists Only load exists files, otherwise will load all files.
      *
      * @return $this
      */
-    public function loadFromFiles(array $filePaths, string $format = ''): self
+    public function loadFromFiles(array $filePaths, string $format = '', bool $onExists = false): self
     {
         foreach ($filePaths as $filePath) {
-            $this->loadFromFile($filePath, $format);
+            $this->loadFromFile($filePath, $format, $onExists);
         }
-
         return $this;
     }
 
     /**
      * @param string $filepath
      * @param string $format  If is empty, will parse from filepath.
+     * @param bool $onExists Only load exists files, otherwise will direct read file.
      *
      * @return $this
      */
-    public function loadFromFile(string $filepath, string $format = ''): self
+    public function loadFromFile(string $filepath, string $format = '', bool $onExists = false): self
     {
-        $data = ConfigUtil::readFromFile($filepath, $format);
+        if ($onExists && !file_exists($filepath)) {
+            return $this;
+        }
 
+        $data = ConfigUtil::readFromFile($filepath, $format);
         return $this->load($data);
     }
 
@@ -223,6 +265,10 @@ class ConfigBox extends Collection
     {
         return $this->load(ConfigUtil::parseTomlFile($filepath));
     }
+
+    //
+    // ============================== helper methods ===============================
+    //
 
     /**
      * Export config data to file

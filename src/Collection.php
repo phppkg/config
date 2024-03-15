@@ -60,7 +60,7 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
      *
      * @return mixed
      */
-    public function set(string $key, mixed $value): self
+    public function set(string $key, mixed $value): static
     {
         if ($this->keyPathSep && strpos($key, $this->keyPathSep) > 0) {
             Arr::setByPath($this->data, $key, $value, $this->keyPathSep);
@@ -126,10 +126,9 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
      *
      * @return $this
      */
-    public function load(iterable $data): self
+    public function load(iterable $data): static
     {
         $this->bindData($this->data, $data);
-
         return $this;
     }
 
@@ -138,10 +137,9 @@ class Collection extends \Toolkit\Stdlib\Std\Collection
      *
      * @return $this
      */
-    public function loadData(iterable $data): self
+    public function loadData(iterable $data): static
     {
         $this->bindData($this->data, $data);
-
         return $this;
     }
 
