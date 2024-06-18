@@ -28,7 +28,7 @@
     "phppkg/ini": "~0.1",
     "colinodell/json5": "^2.2 || ^3.0",
     "nette/neon": "^3.3",
-    "symfony/yaml": "^6.0",
+    "symfony/yaml": "^6.0 || ^7.0",
     "yosymfony/toml": "^1.0",
     "toolkit/fsutil": "^2.0",
     "toolkit/stdlib": "^2.0"
