@@ -24,7 +24,7 @@
     }
   ],
   "require": {
-    "php": ">=8.0.1",
+    "php": ">=8.1",
     "phppkg/ini": "~0.1",
     "colinodell/json5": "^2.2 || ^3.0",
     "nette/neon": "^3.3",

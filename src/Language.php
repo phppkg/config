@@ -29,8 +29,6 @@ use function ucfirst;
 
 /**
  * Class Language
- *
- * @package Toolkit\Utils
  */
 class Language implements ArrayAccess, Countable, IteratorAggregate
 {
@@ -689,7 +687,7 @@ class Language implements ArrayAccess, Countable, IteratorAggregate
      *
      * @param mixed $offset An offset to check for.
      *
-     * @return boolean true on success or false on failure.
+     * @return bool true on success or false on failure.
      *
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
